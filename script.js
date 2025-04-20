@@ -67,6 +67,15 @@ const flappyBird = {
     altura: 24, //tamanho do recorte na sprite
     x: 10,
     y: 50,
+    gravidade: 0.25,
+    velocidade: 0,
+
+    atualiza(){
+        flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade;
+        console.log(flappyBird.velocidade)
+        flappyBird.y = flappyBird.y + flappyBird.velocidade;
+    },
+
     desenha(){
         contexto.drawImage(
             sprites,
@@ -84,6 +93,7 @@ function loop(){
 
      //Quando quiser desenhar algo na tela
      //Ele funciona por ordem
+    flappyBird.atualiza();
     planoDeFundo.desenha();
     flappyBird.desenha();
     chao.desenha();

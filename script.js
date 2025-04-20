@@ -14,6 +14,9 @@ const planoDeFundo = {
     x: 0,
     y: canvas.height - 204,
     desenha(){
+        contexto.fillStyle = '#70c5ce';
+        contexto.fillRect(0,0, canvas.width, canvas.height);
+
         contexto.drawImage(
             sprites,
             planoDeFundo.spriteX, planoDeFundo.spriteY,
@@ -79,8 +82,10 @@ function loop(){
 //cada vez que essa função for executada, iremos pedir para desenhar 
 //algo na tela, no caso, o conteúdo abaixo    
 
-    flappyBird.desenha(); //Quando quiser desenhar o flappy bird na tela
+     //Quando quiser desenhar algo na tela
+     //Ele funciona por ordem
     planoDeFundo.desenha();
+    flappyBird.desenha();
     chao.desenha();
     
     requestAnimationFrame(loop); //ajuda a desenhar os quadros na tela infinitamente

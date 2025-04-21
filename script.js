@@ -1,5 +1,3 @@
-console.log("olá mundo")
-
 const sprites = new Image();
 sprites.src = './sprites.png';
 
@@ -87,18 +85,72 @@ const flappyBird = {
     }
 }
 
-function loop(){ 
-//cada vez que essa função for executada, iremos pedir para desenhar 
-//algo na tela, no caso, o conteúdo abaixo    
+const mensagemGetReady = {
+    sX: 134,
+    sY: 0,
+    w: 174,
+    h: 152,
+    x: (canvas.width / 2) - 174 / 2,
+    y: 50,
+    desenha(){
+        contexto.drawImage(
+            sprites,
+            mensagemGetReady.sX, mensagemGetReady.sY,
+            mensagemGetReady.w, mensagemGetReady.h,
+            mensagemGetReady.x, mensagemGetReady.y,
+            mensagemGetReady.w, mensagemGetReady.h
+        );
+    },
+};
 
-     //Quando quiser desenhar algo na tela
-     //Ele funciona por ordem
-    flappyBird.atualiza();
-    planoDeFundo.desenha();
-    flappyBird.desenha();
-    chao.desenha();
-    
+//Telas
+
+let telaAtiva = {};
+
+function mudaDeTela(novaTela){
+    telaAtiva = novaTela
+}
+
+const telas={
+    inicio:{
+        desenha(){
+            planoDeFundo.desenha();
+            chao.desenha();
+            flappyBird.desenha();
+            mensagemGetReady.desenha();
+
+        },
+        click(){
+            mudaDeTela(telas.jogo)
+        },
+        atualiza(){
+
+        }
+    }
+}
+
+telas.jogo={
+    desenha(){
+        planoDeFundo.desenha();
+        chao.desenha();
+        flappyBird.desenha();
+    },
+    atualiza(){
+        flappyBird.atualiza();
+    }
+}
+
+function loop(){ 
+    telaAtiva.desenha();
+    telaAtiva.atualiza();
     requestAnimationFrame(loop); //ajuda a desenhar os quadros na tela infinitamente
 }
 
+window.addEventListener('click', function(){
+    if (telaAtiva.click){
+        telaAtiva.click();
+    }
+})
+
+mudaDeTela(telas.inicio)
 loop();

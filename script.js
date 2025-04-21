@@ -65,12 +65,15 @@ const flappyBird = {
     altura: 24, //tamanho do recorte na sprite
     x: 10,
     y: 50,
+    pulo: 4.6,
+    pula(){
+        flappyBird.velocidade = - flappyBird.pulo
+    },
     gravidade: 0.25,
     velocidade: 0,
 
     atualiza(){
         flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade;
-        console.log(flappyBird.velocidade)
         flappyBird.y = flappyBird.y + flappyBird.velocidade;
     },
 
@@ -107,9 +110,11 @@ const mensagemGetReady = {
 
 let telaAtiva = {};
 
+
 function mudaDeTela(novaTela){
     telaAtiva = novaTela
 }
+
 
 const telas={
     inicio:{
@@ -129,16 +134,21 @@ const telas={
     }
 }
 
+
 telas.jogo={
     desenha(){
         planoDeFundo.desenha();
         chao.desenha();
         flappyBird.desenha();
     },
+    click(){
+        flappyBird.pula();
+    },
     atualiza(){
         flappyBird.atualiza();
     }
 }
+
 
 function loop(){ 
     telaAtiva.desenha();

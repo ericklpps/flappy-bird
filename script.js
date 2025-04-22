@@ -154,38 +154,62 @@ function criaCanos(){
         largura: 52,
         altura: 400,
         chao:{
-            spriteX: 52,
-            spriteY: 169,
+            spriteX: 0,
+            spriteY: 168,
         },
         ceu:{
             spriteX: 52,
-            spriteY: 169,
+            spriteY: 189,
         },
         espaco: 80,
         desenha(){
-            const yRandom = -150;
-            const espacamentoEntreCanos = 90;
-            const canoCeuX = 220;
-            const canoCeuY = yRandom;
-
-            contexto.drawImage(
-                sprites,
-                canos.ceu.spriteX, canos.ceu.spriteY,
-                canos.largura, canos.altura,
-                canoCeuX, canoCeuY,
-                canos.largura, canos.altura,
-            )
-
-            const canoChaoX = 220;
-            const canoChaoY = canos.altura + espacamentoEntreCanos + yRandom;
-            contexto.drawImage(
-                sprites,
-                canos.chao.spriteX, canos.chao.spriteY,
-                canos.largura, canos.altura,
-                canoChaoX, canoChaoY,
-                canos.largura, canos.altura,
-            )
+            canos.pares.forEach(function(par){
+                const yRandom = par.y;
+                const espacamentoEntreCanos = 90;
+                
+                const canoCeuX = par.x;
+                const canoCeuY = yRandom;
+               
+                contexto.drawImage(
+                    sprites,
+                    canos.ceu.spriteX, canos.ceu.spriteY,
+                    canos.largura, canos.altura,
+                    canoCeuX, canoCeuY,
+                    canos.largura, canos.altura,
+                )
+    
+                //Cano do chão
+                const canoChaoX = par.x;
+                const canoChaoY = canos.altura + espacamentoEntreCanos + yRandom;
+                contexto.drawImage(
+                    sprites,
+                    canos.chao.spriteX, canos.chao.spriteY,
+                    canos.largura, canos.altura,
+                    canoChaoX, canoChaoY,
+                    canos.largura, canos.altura,
+                )
+            })
+         
         },
+        pares: [],
+        atualiza(){
+            const passou100Frames = frames % 100 === 0;
+            if(passou100Frames){
+                console.log("passou 100 frames")
+                canos.pares.push({
+                    x: canvas.width,
+                    y: -150 * (Math.random()+1),
+                });    
+            }
+
+            canos.pares.forEach(function(par){
+                par.x = par.x - 2;
+
+                if(par.x + canos.largura <= 0){
+                    canos.pares.shift();
+                }
+            })
+        }
     }
     return canos;
 }
@@ -229,9 +253,9 @@ const telas={
         },
         desenha(){
             planoDeFundo.desenha();
-            globais.chao.desenha();
             globais.flappyBird.desenha();
             globais.canos.desenha();
+            globais.chao.desenha();
             //mensagemGetReady.desenha();
 
         },
@@ -240,6 +264,7 @@ const telas={
         },
         atualiza(){
             globais.chao.atualiza();
+            globais.canos.atualiza(); 
         }
     }
 }

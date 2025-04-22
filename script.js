@@ -122,10 +122,15 @@ function criaFlappyBird(){
         ],
         frameAtual: 0,
         atualizarOFrameAtual(){
-            const baseDoIncremento = 1;
-            const incremento = baseDoIncremento + flappyBird.frameAtual;
-            const baseRepeticao= flappyBird.movimentos.length;
-            flappyBird.frameAtual = incremento % baseRepeticao
+            const intervaloDeFrames = 10;
+            const intervaloPassado = frames % intervaloDeFrames === 0;
+            if(intervaloPassado){
+                const baseDoIncremento = 1;
+                const incremento = baseDoIncremento + flappyBird.frameAtual;
+                const baseRepeticao= flappyBird.movimentos.length;
+                flappyBird.frameAtual = incremento % baseRepeticao
+            }
+
         },
         desenha(){
             flappyBird.atualizarOFrameAtual();

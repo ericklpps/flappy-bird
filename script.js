@@ -98,17 +98,13 @@ function criaFlappyBird(){
         pulo: 4.6,
         pula(){
             somPulo.play();
-            console.log('pular');
-            console.log('Antes '+ flappyBird.velocidade)
             flappyBird.velocidade = - flappyBird.pulo
-            console.log('Depois ' + flappyBird.velocidade)
         },
         gravidade: 0.25,
         velocidade: 0,
     
         atualiza(){
             if(fazColisao(flappyBird, globais.chao)){
-                console.log('Fez colisão');
                 somHit.play();
                 mudaDeTela(telas.inicio)
                 return;
@@ -191,11 +187,17 @@ function criaCanos(){
             })
          
         },
+        temColisaoComOFlappyBird(par){
+            if(globais.flappyBird.x >= par.x){
+                console.log("Flappy bird invadiu a area dos canos")
+            }
+            return true;
+            return false;
+        },
         pares: [],
         atualiza(){
             const passou100Frames = frames % 100 === 0;
             if(passou100Frames){
-                console.log("passou 100 frames")
                 canos.pares.push({
                     x: canvas.width,
                     y: -150 * (Math.random()+1),
@@ -205,12 +207,15 @@ function criaCanos(){
             canos.pares.forEach(function(par){
                 par.x = par.x - 2;
 
+                if(canos.temColisaoComOFlappyBird(par)){
+                }
+
                 if(par.x + canos.largura <= 0){
                     canos.pares.shift();
                 }
-            })
-        }
-    }
+            });
+        },
+    };
     return canos;
 }
 

@@ -4,6 +4,11 @@ sprites.src = './sprites.png';
 const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
 
+const somHit = new Audio();
+somHit.src = './sons/hit.wav'
+
+const somPulo = new Audio();
+somPulo.src = './sons/pulo.wav'
 
 const planoDeFundo = {
     spriteX: 390,
@@ -32,7 +37,6 @@ const planoDeFundo = {
         )
     }
 }
-
 
 const chao = {
     spriteX: 0,
@@ -79,11 +83,11 @@ function criaFlappyBird(){
         y: 50,
         pulo: 4.6,
         pula(){
+            somPulo.play();
             console.log('pular');
             console.log('Antes '+ flappyBird.velocidade)
             flappyBird.velocidade = - flappyBird.pulo
             console.log('Depois ' + flappyBird.velocidade)
-    
         },
         gravidade: 0.25,
         velocidade: 0,
@@ -91,6 +95,7 @@ function criaFlappyBird(){
         atualiza(){
             if(fazColisao(flappyBird, chao)){
                 console.log('Fez colisão');
+                somHit.play();
                 mudaDeTela(telas.inicio)
                 return;
             }

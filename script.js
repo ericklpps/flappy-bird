@@ -41,6 +41,7 @@ const planoDeFundo = {
     }
 }
 
+
 function criaChao(){
     const chao = {
         spriteX: 0,
@@ -148,6 +149,47 @@ function criaFlappyBird(){
     return flappyBird;
 }
 
+function criaCanos(){
+    const canos = {
+        largura: 52,
+        altura: 400,
+        chao:{
+            spriteX: 52,
+            spriteY: 169,
+        },
+        ceu:{
+            spriteX: 52,
+            spriteY: 169,
+        },
+        espaco: 80,
+        desenha(){
+            const yRandom = -150;
+            const espacamentoEntreCanos = 90;
+            const canoCeuX = 220;
+            const canoCeuY = yRandom;
+
+            contexto.drawImage(
+                sprites,
+                canos.ceu.spriteX, canos.ceu.spriteY,
+                canos.largura, canos.altura,
+                canoCeuX, canoCeuY,
+                canos.largura, canos.altura,
+            )
+
+            const canoChaoX = 220;
+            const canoChaoY = canos.altura + espacamentoEntreCanos + yRandom;
+            contexto.drawImage(
+                sprites,
+                canos.chao.spriteX, canos.chao.spriteY,
+                canos.largura, canos.altura,
+                canoChaoX, canoChaoY,
+                canos.largura, canos.altura,
+            )
+        },
+    }
+    return canos;
+}
+
 const mensagemGetReady = {
     sX: 134,
     sY: 0,
@@ -170,7 +212,6 @@ const mensagemGetReady = {
 let globais = {};
 let telaAtiva = {};
 
-
 function mudaDeTela(novaTela){
     telaAtiva = novaTela
     if(telaAtiva.inicializa){
@@ -184,12 +225,14 @@ const telas={
         inicializa(){
             globais.flappyBird = criaFlappyBird();
             globais.chao = criaChao();
+            globais.canos = criaCanos();
         },
         desenha(){
             planoDeFundo.desenha();
             globais.chao.desenha();
             globais.flappyBird.desenha();
-            mensagemGetReady.desenha();
+            globais.canos.desenha();
+            //mensagemGetReady.desenha();
 
         },
         click(){

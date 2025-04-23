@@ -316,6 +316,13 @@ let telaAtiva = {};
 function mudaParaTela(novaTela){
   telaAtiva = novaTela;
 
+  const comoJogar = document.getElementById('como-jogar');
+  if (telaAtiva !== telas.inicio) {
+    comoJogar.style.display = 'none';
+  } else {
+    comoJogar.style.display = 'block';
+  }
+
   if(telaAtiva.inicializa) {
     telaAtiva.inicializa();
   }
@@ -427,17 +434,30 @@ telas.gameOver = {
 }
 
 
-function tratarCliqueOuEspaco(evento) {
+function tratarCliqueOuTecla(evento) {
   const teclaEspaco = evento.code === 'Space';
+  const setaCima = evento.code === 'ArrowUp';
   const clickMouse = evento.type === 'click';
 
-  if (telaAtiva.click && (clickMouse || teclaEspaco)) {
+  const teclasBloqueadas = ['Space', 'ArrowUp', 'ArrowDown'];
+  if (evento.type === 'keydown' && teclasBloqueadas.includes(evento.code)) {
+    evento.preventDefault();
+  }
+
+  if (telaAtiva.click && (clickMouse || teclaEspaco || setaCima)) {
     telaAtiva.click();
   }
 }
 
-window.addEventListener('click', tratarCliqueOuEspaco);
-window.addEventListener('keydown', tratarCliqueOuEspaco);
+window.addEventListener('keydown', function(e) {
+  const teclasQueDevemSerTravadas = ['Space', 'ArrowUp', 'ArrowDown'];
+  if (teclasQueDevemSerTravadas.includes(e.code)) {
+    e.preventDefault();
+  }
+});
+
+window.addEventListener('click', tratarCliqueOuTecla);
+window.addEventListener('keydown', tratarCliqueOuTecla);
 
 mudaParaTela(telas.inicio);
 loop();

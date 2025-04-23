@@ -7,6 +7,7 @@
     <title>Flappy bird</title>
 </head>
 <body>
+    <div id="como-jogar">Aperte [Espaço], [↑] ou clique no mouse para iniciar<br>Se cair ou colidir com o cano, você PERDEU!</div>
     <canvas id="game-canvas" width="320" height="480"></canvas>
     <style>
         body{
@@ -14,12 +15,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            background-image: "/imagens/funco";
         }
         canvas{
             border: 1px solid #000;
             display: block;
             margin: 0 auto;
         }
+        #como-jogar {
+            position: absolute;
+            top: 30px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            color: black;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+
     </style>
     <script src="script.js"></script>
 </body>

@@ -1,8 +1,10 @@
 let frames = 0;
-const somHit = new Audio();
+let somHit = new Audio();
 somHit.src = './sons/hit.wav';
-const somPulo = new Audio();
+let somPulo = new Audio();
 somPulo.src = './sons/pulo.wav'
+let somPonto = new Audio();
+somPonto.src = './sons/ponto.wav'
 
 const sprites = new Image();
 sprites.src = './sprites.png';
@@ -40,7 +42,7 @@ const planoDeFundo = {
   },
 };
 
-export function criaChao(){
+ function criaChao(){
   const chao ={
     spriteX: 0,
     spriteY: 610,
@@ -76,7 +78,7 @@ export function criaChao(){
   return chao;
 }
 
-export function fazColisao(flappyBird, chao){
+ function fazColisao(flappyBird, chao){
   const flappyBirdY = flappyBird.y + flappyBird.altura;
   const chaoY = chao.y;
 
@@ -87,7 +89,7 @@ export function fazColisao(flappyBird, chao){
   return false;
 }
 
-export function criaFlappyBird(){
+ function criaFlappyBird(){
   const flappyBird = {
     spriteX: 0,
     spriteY: 0,
@@ -185,7 +187,7 @@ const mensagemGameOver = {
 }
 
 //canos
-export function criaCanos(){
+ function criaCanos(){
   const canos = {
     largura: 52,
     altura: 400,
@@ -254,6 +256,7 @@ export function criaCanos(){
         canos.pares.push({
           x: canvas.width,
           y: -150 * (Math.random() + 1),
+          marcouPonto: false
         });
       }
 
@@ -261,12 +264,18 @@ export function criaCanos(){
 
       canos.pares.forEach(function(par){
         par.x = par.x - 2;
+        
 
         if(canos.temColisaoComOFlappyBird(par)){
           somHit.play();
+          salvarRecorde(globais.placar.pontuacao);
           mudaParaTela(telas.gameOver);
         }
-
+        if (!par.marcouPonto && par.x + canos.largura < globais.flappyBird.x) {
+            globais.placar.pontuacao++;
+            somPonto.play();
+            par.marcouPonto = true;
+        }
         if(par.x + canos.largura <= 0){
           canos.pares.shift();
         }
@@ -278,31 +287,33 @@ export function criaCanos(){
   return canos;
 }
 
-export function criaPlacar(){
+ function criaPlacar(){
   const placar = {
     pontuacao: 0,
-    desenha(){
-      contexto.font = '35px';
-      contexto.textAlign = 'right';
-      contexto.fillStyle = 'white';
-      contexto.fillText(`${placar.pontuacao}`, canvas.width - 10, 35);      
+    desenha() {
+        contexto.font = '30px "Press Start 2P"';
+        contexto.fillStyle = 'white';
+        contexto.textAlign = 'right';
+        contexto.fillText(`${placar.pontuacao}`, canvas.width - 10, 35);
     },
     atualiza(){
-      const intervaloDeFrames = 20;
-      const passouOIntervalo = frames % intervaloDeFrames === 0;
-
-      if(passouOIntervalo) {
-        placar.pontuacao++
-      }
     }
   }
   return placar;
 }
 
+function salvarRecorde(pontuacaoAtual) {
+    const recorde = localStorage.getItem('recorde') || 0;
+  
+    if (pontuacaoAtual > recorde) {
+      localStorage.setItem('recorde', pontuacaoAtual);
+    }
+  }
+
 //telas
 const globais = {};
 let telaAtiva = {};
-export function mudaParaTela(novaTela){
+function mudaParaTela(novaTela){
   telaAtiva = novaTela;
 
   if(telaAtiva.inicializa) {
@@ -356,9 +367,49 @@ telas.jogo = {
 };
 
 telas.gameOver = {
-  desenha(){
-    mensagemGameOver.desenha();
-  },
+    desenha() {
+        planoDeFundo.desenha();
+        globais.chao.desenha();
+    
+        const larguraCard = 250;
+        const alturaCard = 150;
+        const xCard = (canvas.width - larguraCard) / 2;
+        const yCard = 90;
+    
+        contexto.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        contexto.fillRect(xCard, yCard, larguraCard, alturaCard);
+    
+        contexto.strokeStyle = '#fff';
+        contexto.lineWidth = 2;
+        contexto.strokeRect(xCard, yCard, larguraCard, alturaCard);
+    
+        contexto.fillStyle = 'white';
+        contexto.font = '16px "Press Start 2P"';
+        contexto.textAlign = 'center';
+        contexto.fillText('Game Over', canvas.width / 2, yCard + 35);
+    
+        const pontuacao = globais.placar.pontuacao;
+        const recorde = localStorage.getItem('recorde') || 0;
+    
+        contexto.font = '16px "Press Start 2P"';
+        contexto.fillText(`Pontuação: ${pontuacao}`, canvas.width / 2, yCard + 75);
+        contexto.fillText(`Recorde: ${recorde}`, canvas.width / 2, yCard + 105);
+    
+        contexto.fillStyle = '#ffcc00';
+        contexto.fillRect(xCard + 60, yCard + 110, 130, 30);
+    
+        contexto.fillStyle = '#000';
+        contexto.font = '8px "Press Start 2P"';
+        contexto.fillText('Jogar Novamente', canvas.width / 2, yCard + 130);
+      },
+      atualiza() {},
+      click() {
+        mudaParaTela(telas.inicio);
+      },
+      atualiza(){},
+      click(){
+        mudaParaTela(telas.inicio);
+      },
   atualiza(){
     
   },
@@ -367,11 +418,11 @@ telas.gameOver = {
   }
 }
 
-export function loop(){
+ function loop(){
 
-  telaAtiva.desenha();
-  telaAtiva.atualiza();
-frames++
+    telaAtiva.desenha();
+    telaAtiva.atualiza();
+    frames++
   requestAnimationFrame(loop);
 }
 

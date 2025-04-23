@@ -427,11 +427,17 @@ telas.gameOver = {
 }
 
 
-window.addEventListener('click', function(){
-  if(telaAtiva.click) {
+function tratarCliqueOuEspaco(evento) {
+  const teclaEspaco = evento.code === 'Space';
+  const clickMouse = evento.type === 'click';
+
+  if (telaAtiva.click && (clickMouse || teclaEspaco)) {
     telaAtiva.click();
   }
-});
+}
+
+window.addEventListener('click', tratarCliqueOuEspaco);
+window.addEventListener('keydown', tratarCliqueOuEspaco);
 
 mudaParaTela(telas.inicio);
 loop();
